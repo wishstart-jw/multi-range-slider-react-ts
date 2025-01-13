@@ -9,6 +9,8 @@ type Props = {
 	step?: number | string;
 	minValue?: number | string;
 	maxValue?: number | string;
+	minLimit?: number | string;
+	maxLimit?: number | string;
 	baseClassName?: string;
 	className?: string;
 	disabled?: boolean;
@@ -47,6 +49,8 @@ const MultiRangeSlider = (props: Props, ref: React.ForwardedRef<HTMLDivElement>)
 	let refBar = useRef<HTMLDivElement>(null);
 	let min = +(props.min || 0);
 	let max = +(props.max || 100);
+	let minLimit = +(props.minLimit || min);
+	let maxLimit = +(props.maxLimit || max);
 	let step = Math.abs(+(props.step || 5));
 	let fixed = 0;
 	let disabled = !!props.disabled;
@@ -143,8 +147,8 @@ const MultiRangeSlider = (props: Props, ref: React.ForwardedRef<HTMLDivElement>)
 				val = Math.round(val / step) * step;
 			}
 			val = parseFloat(val.toFixed(fixed));
-			if (val < min) {
-				val = min;
+			if (val < minLimit) {
+				val = minLimit;
 			} else if (val > maxValue - stepValue) {
 				val = maxValue - stepValue;
 			}
@@ -175,10 +179,10 @@ const MultiRangeSlider = (props: Props, ref: React.ForwardedRef<HTMLDivElement>)
 				val = Math.round(val / step) * step;
 			}
 			val = parseFloat(val.toFixed(fixed));
-			if (val < min) {
-				val = min;
-			} else if (val > maxValue - stepValue) {
-				val = maxValue - stepValue;
+			if (val < minLimit) {
+				val = minLimit;
+			} else if (val > maxLimit - stepValue) {
+				val = maxLimit - stepValue;
 			}
 			set_minValue(val);
 		};
@@ -235,8 +239,8 @@ const MultiRangeSlider = (props: Props, ref: React.ForwardedRef<HTMLDivElement>)
 			val = parseFloat(val.toFixed(fixed));
 			if (val < minValue + stepValue) {
 				val = minValue + stepValue;
-			} else if (val > max) {
-				val = max;
+			} else if (val > maxLimit) {
+				val = maxLimit;
 			}
 			set_maxValue(val);
 		};
@@ -404,7 +408,7 @@ const MultiRangeSlider = (props: Props, ref: React.ForwardedRef<HTMLDivElement>)
 		<div ref={ref} id={props.id} className={(props.baseClassName || 'multi-range-slider') + ' ' + (props.className || '') + (disabled ? ' disabled' : '')} style={props.style} onWheel={onMouseWheel} >
 			<div className='bar' ref={refBar}>
 				<div className='bar-left' style={{ width: barMin + '%', backgroundColor: props.barLeftColor }} onClick={onBarLeftClick}></div>
-				<input placeholder='min-value' className='input-type-range input-type-range-min' type='range' min={min} max={max} step={step} value={minValue} onInput={onInputMinChange} />
+				<input placeholder='min-value' className='input-type-range input-type-range-min' type='range' min={minLimit} max={maxLimit} step={step} value={minValue} onInput={onInputMinChange} />
 				<div className='thumb thumb-left' style={{ backgroundColor: props.thumbLeftColor }} onMouseDown={onLeftThumbMousedown} onTouchStart={onLeftThumbTouchStart}>
 					<div className='caption'>
 						<span className='min-caption'>{minCaption}</span>
